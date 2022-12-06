@@ -1,0 +1,115 @@
+import UIKit
+
+class ViewController: UIViewController {
+
+    @IBOutlet weak var tfValue: UITextField!
+    @IBOutlet weak var btUnit1: UIButton!
+    @IBOutlet weak var btUnit2: UIButton!
+    @IBOutlet weak var lbResult: UILabel!
+    @IBOutlet weak var lbResultUnit: UILabel!
+    @IBOutlet weak var lbUnit: UILabel!
+    @IBOutlet weak var tfCotacao: UITextField!
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+
+
+    @IBAction func showNext(_ sender: UIButton) {
+        switch lbUnit.text! {
+            case "Dólar":
+                lbUnit.text = "Euro"
+                btUnit1.setTitle("BRL", for: .normal)
+                btUnit2.setTitle("EUR", for: .normal)
+            case "Euro":
+                lbUnit.text = "Libra"
+                btUnit1.setTitle("BRL", for: .normal)
+                btUnit2.setTitle("GBP", for: .normal)
+            case "Libra":
+                lbUnit.text = "Dólar Canadense"
+                btUnit1.setTitle("BRL", for: .normal)
+                btUnit2.setTitle("CAD", for: .normal)
+            default:
+                lbUnit.text = "Dólar"
+                btUnit1.setTitle("BRL", for: .normal)
+                btUnit2.setTitle("USD", for: .normal)
+        }
+        convert(nil)
+    }
+    
+    @IBAction func convert(_ sender: UIButton?) {
+        if let sender = sender {
+            if sender == btUnit1{
+                btUnit2.alpha = 0.5
+            } else {
+                btUnit1.alpha = 0.5
+            }
+            sender.alpha = 1.0
+        }
+        
+        switch lbUnit.text! {
+            case "Dólar":
+                calcDolar()
+            case "Euro":
+                calcEuro()
+            case "Libra":
+                calcLibra()
+            default:
+                calcCanadense()
+        }
+        
+                view.endEditing(true)
+                let result = Double(lbResult.text!)!
+                lbResult.text = String(format: "%.2f", result)
+    }
+    func calcDolar(){
+                guard let dolar = Double(tfValue.text!) else {return}
+                guard let cotacao = Double(tfCotacao.text!) else {return}
+        if btUnit1.alpha == 1.0 {
+                    lbResultUnit.text = "USD"
+            lbResult.text = String(((dolar * 0.06) + dolar) / cotacao )
+                } else {
+                    lbResultUnit.text = "BRL"
+            lbResult.text = String(((dolar * 0.06) + dolar) * cotacao)
+                }
+    }
+    
+    func calcEuro(){
+        guard let euro = Double(tfValue.text!) else {return}
+        guard let cotacao = Double(tfCotacao.text!) else {return}
+               if  btUnit1.alpha == 1.0 {
+                   lbResultUnit.text = "EUR"
+                lbResult.text = String(((euro * 0.06) + euro) / cotacao)
+               } else {
+                   lbResultUnit.text = "BRL"
+                lbResult.text = String(((euro * 0.06) + euro) * cotacao)
+               }
+    }
+    
+    func calcLibra(){
+        guard let libra = Double(tfValue.text!) else {return}
+        guard let cotacao = Double(tfCotacao.text!) else {return}
+               if  btUnit1.alpha == 1.0 {
+                   lbResultUnit.text = "GBP"
+                   lbResult.text = String(((libra * 0.06) + libra) / cotacao)
+               } else {
+                   lbResultUnit.text = "BRL"
+                   lbResult.text = String(((libra * 0.06) + libra) * cotacao)
+               }
+    }
+    
+    func calcCanadense(){
+         guard let canadense = Double(tfValue.text!) else {return}
+         guard let cotacao = Double(tfCotacao.text!) else {return}
+                if btUnit1.alpha == 1.0 {
+                   lbResultUnit.text = "CAD"
+                    lbResult.text = String(((canadense * 0.06) + canadense) / cotacao)
+               } else {
+                    lbResultUnit.text = "BRL"
+                    lbResult.text = String(((canadense * 0.06) + canadense) * cotacao)
+                      }
+    }
+
+}
